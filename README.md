@@ -2,6 +2,7 @@
 
 Repository containing python app for accessing Cisco FMC via API and converting downloaded object to .csv.
 
+
 Hardcoded parameters regarding FMC:
 ```
 FMC_HOST='10.159.8.30'
@@ -19,4 +20,16 @@ To deploy this project to Docker clone repository and run:
 
 ```bash
   docker run -p 8501:8501 fmcobjectstocsv
+```
+
+## Usage
+
+Open in web browser:
+
+example:
+```
+http://localhost:8501
+```
+```
+http://<ip_address_of_server>:8501
 ```
