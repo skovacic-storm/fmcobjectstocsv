@@ -1,0 +1,28 @@
+# --1--
+FROM python:3.11-slim AS build
+
+ARG GIT_TOKEN
+ENV REPO_URL="" #repository url without https://
+
+# Install Git
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Clone the repository using the token
+RUN git clone https://$GIT_TOKEN@$REPO_URL /app
+
+# --2--
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    VENV_PATH="/app/.venv"
+
+RUN python -m venv $VENV_PATH
+ENV PATH="$VENV_PATH/bin:$PATH"
+
+WORKDIR /app
+
+COPY --from=build /app /app
+
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+CMD ["streamlit", "run", "app.py"]

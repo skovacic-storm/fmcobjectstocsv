@@ -1,0 +1,22 @@
+# --1--
+FROM python:3.11-slim AS build
+
+COPY getFMCObjects.tar.gz /tmp
+RUN mkdir -p /app && tar -xzf /tmp/getFMCObjects.tar.gz -C /app
+
+# --2--
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    VENV_PATH="/app/.venv"
+
+RUN python -m venv $VENV_PATH
+ENV PATH="$VENV_PATH/bin:$PATH"
+
+WORKDIR /app
+
+COPY --from=build /app /app
+
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+CMD ["streamlit", "run", "app.py"]
